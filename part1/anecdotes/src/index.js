@@ -17,7 +17,7 @@ const App = (props) => {
   } 
 
   const [selected, setSelected] = useState(random())
-  const [votes, setVotes] = useState({ 0: 1, 1: 3, 2: 4, 3: 2 })
+  const [votes, setVotes] = useState({ 0: 1, 1: 3, 2: 4, 3: 2, 4: 0, 5:0 })
 
   const next = () => {
     setSelected(random())
@@ -25,22 +25,23 @@ const App = (props) => {
 
   const vote = (i) => {
     console.log(props.anecdotes[i]);
-    if(votes[i]){
       let nVotes = {...votes}
       nVotes[i]++
       setVotes(nVotes)
-    }else{
-      let nVotes = {...votes}
-      nVotes[i] = 1
-      setVotes(nVotes)
-    }
   }
+
+  let values = [...Object.values(votes)];
+  let maxV = Math.max(...Object.values(votes));
+  let iValue = values.indexOf(maxV)
 
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       <p>{props.anecdotes[selected]}</p>
       <p>has {votes[selected] ? votes[selected] : <>0</>} votes</p>
       <button onClick={() => vote(selected)}>vote</button><button onClick={next}>next anecdote</button>
+      <h1>Anecdote with most votes</h1>
+      <p>{props.anecdotes[iValue]}</p>
     </div>
   );
 }
