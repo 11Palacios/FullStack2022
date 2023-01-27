@@ -11,12 +11,17 @@ const Statistics = ({good, neutral, bad, all, average, positive}) => {
             {all > 0 
             ? 
             <>
-                <Statistic name='good' number={good} />
-                <Statistic name='neutral' number={neutral} />
-                <Statistic name='bad' number={bad} />
-                <Statistic name='all' number={all} />
-                <Statistic name='average' number={average} />
-                <Statistic name='positive' number={positive} symbol="%" />
+            <table>
+                <tbody>
+                    <tr><Statistic name='good' number={good} /></tr>
+                    <tr><Statistic name='neutral' number={neutral} /></tr>
+                    <tr><Statistic name='bad' number={bad} /></tr>
+                    <tr><Statistic name='all' number={all} /></tr>
+                    <tr><Statistic name='average' number={average} /></tr>
+                    <tr><Statistic name='positive' number={positive} symbol="%" /></tr>
+                </tbody>
+            </table>
+                
             </>
             :
             <>
