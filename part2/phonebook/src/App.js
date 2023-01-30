@@ -1,17 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Persons from './components/Persons';
 import Form from './components/Form';
 import Filter from './components/Filter';
+import Axios from 'axios';
 
 const App = () => {
-    const [ persons, setPersons ] = useState([
-        { name: 'Arto Hellas', number: '040-123456' },
-        { name: 'Ada Lovelace', number: '39-44-5323523' },
-        { name: 'Dan Abramov', number: '12-43-234345' },
-        { name: 'Mary Poppendieck', number: '39-23-6423122' }
-    ]) 
+    const [ persons, setPersons ] = useState(null) 
     const [ newName, setNewName ] = useState('')
     const [ newNumber, setNewNumber ] = useState(null)
+
+    useEffect(() => {
+        Axios
+          .get('http://localhost:3001/persons')
+          .then(response => {
+            setPersons(response.data)
+          })
+    }, [])
 
     const handleNewName = (e) => {
         setNewName(e.target.value)
@@ -49,9 +53,16 @@ const App = () => {
     return (
       <div>
         <h2>Phonebook</h2>
-        <Filter handleFilter={handleFilter} />
-        <Form handleNewName={handleNewName} handleNewNumber={handleNewNumber} addPerson={addPerson} />
-        <Persons persons={persons} />
+        {persons ? 
+        <>
+            <Filter handleFilter={handleFilter} />
+            <Form handleNewName={handleNewName} handleNewNumber={handleNewNumber} addPerson={addPerson} />
+            <Persons persons={persons} />
+        </>
+        :
+        <></>
+        }
+        
       </div>
     )
   }
