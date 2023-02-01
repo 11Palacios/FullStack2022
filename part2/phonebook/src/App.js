@@ -54,7 +54,14 @@ const App = () => {
         } else {
             alert(`${newName} already exist!`)
         }
-        
+    }
+
+    const handleErase = id => {
+      let newPersons = persons.filter(n => n.id !== id)
+      personService.erase(id)
+      .then(
+        setPersons(newPersons)
+      )
     }
 
 
@@ -66,7 +73,7 @@ const App = () => {
         <>
             <Filter handleFilter={handleFilter} />
             <Form handleNewName={handleNewName} handleNewNumber={handleNewNumber} addPerson={addPerson} />
-            <Persons persons={persons} />
+            <Persons persons={persons} handleErase={handleErase}/>
         </>
         :
         <></>
