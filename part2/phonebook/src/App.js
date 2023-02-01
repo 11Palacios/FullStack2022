@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Persons from './components/Persons';
 import Form from './components/Form';
 import Filter from './components/Filter';
-import Axios from 'axios';
+import personService from './services/persons';
 
 const App = () => {
     const [ persons, setPersons ] = useState(null) 
@@ -10,10 +10,9 @@ const App = () => {
     const [ newNumber, setNewNumber ] = useState(null)
 
     useEffect(() => {
-        Axios
-          .get('http://localhost:3001/persons')
-          .then(response => {
-            setPersons(response.data)
+        personService.getAll()
+          .then(allPersons => {
+            setPersons(allPersons)
           })
     }, [])
 
@@ -40,10 +39,10 @@ const App = () => {
             number: newNumber
           }
           //
-          Axios.post('http://localhost:3001/persons', personObject)
+          personService.create(personObject)
           .then(response => {
             let newPersons = [...persons]
-        newPersons.push(response.data)
+        newPersons.push(response)
         setPersons(newPersons)
         document.getElementById('input').value=''
         setNewName('')
