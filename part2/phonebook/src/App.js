@@ -52,7 +52,17 @@ const App = () => {
           //
            
         } else {
-            alert(`${newName} already exist!`)
+            if(window.confirm(`${exist[0].name} already exist, replace the old number with a new one?`)){
+              let newPersons = persons.filter(p => p.id !== exist[0].id)
+              exist[0].number = newNumber;
+              newPersons.push(exist[0])
+              personService.update(exist[0])
+              .then(
+                setPersons(newPersons)
+              )
+            }else{
+              console.log('false')
+            }
         }
     }
 
@@ -63,8 +73,6 @@ const App = () => {
         setPersons(newPersons)
       )
     }
-
-
   
     return (
       <div>
