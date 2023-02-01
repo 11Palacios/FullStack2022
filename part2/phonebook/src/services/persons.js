@@ -16,6 +16,11 @@ const erase = id => {
     return request.then(response => response.data)
 }
 
-const personService = { getAll, create, erase }
+const update = (id, newPerson) => {
+    const request = axios.put(`${baseUrl}/${id}`, newPerson)
+    return request.then(response => response.data)
+}
+
+const personService = { getAll, create, erase, update }
 
 export default personService;
