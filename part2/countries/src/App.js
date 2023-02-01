@@ -19,6 +19,11 @@ function App() {
     }
   }
 
+  const show = (country) => {
+    let filter = filtered.filter(c => c.name.common.toLowerCase() === country.toLowerCase())
+    setFiltered(filter)
+  }
+
   
   return (
     <div className="App">
@@ -39,7 +44,7 @@ function App() {
                     </ul>
                     <img src={filtered[0].flags.png} alt={`flag of ${filtered[0].name.common}`} width='125px'></img>
                   </div> :
-                    filtered.map(f => <p key={f.name.common}>{f.name.common}</p>) 
+                    filtered.map(f => <p key={f.name.common}><span>{f.name.common} </span><button onClick={() => show(f.name.common)}>show</button></p>) 
                       : <></>}
             </> : 
               <p>Retrieving info</p>}
