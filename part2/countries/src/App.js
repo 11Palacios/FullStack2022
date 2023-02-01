@@ -5,6 +5,7 @@ function App() {
   const url = 'https://restcountries.com/v3.1/all';
   const [countries, setCountries] = useState(null)
   const [filtered, setFiltered] = useState(null)
+  const [weather, setWeather] = useState(null)
 
   useEffect(() => {
     axios.get(url).then(response => {
@@ -23,7 +24,43 @@ function App() {
     let filter = filtered.filter(c => c.name.common.toLowerCase() === country.toLowerCase())
     setFiltered(filter)
   }
+  /**
+   * const axios = require("axios");
 
+const options = {
+  method: 'GET',
+  url: 'https://weatherapi-com.p.rapidapi.com/future.json',
+  params: {q: 'London', dt: '2022-12-25'},
+  headers: {
+    'X-RapidAPI-Key': '1005af7c8bmsh45107fa902d1447p155029jsn30d53049140f',
+    'X-RapidAPI-Host': 'weatherapi-com.p.rapidapi.com'
+  }
+};
+
+axios.request(options).then(function (response) {
+	console.log(response.data);
+}).catch(function (error) {
+	console.error(error);
+});
+   */
+
+if(filtered && filtered.length === 1){
+  const options = {
+    method: 'GET',
+    url: 'https://weatherapi-com.p.rapidapi.com/current.json',
+    params: {q: filtered[0].capital[0]},
+    headers: {
+      'X-RapidAPI-Key': process.env.REACT_APP_WEATHER_API,
+      'X-RapidAPI-Host': 'weatherapi-com.p.rapidapi.com'
+    }
+  };
+  
+  axios.request(options).then(function (response) {
+    setWeather(response.data.current)
+  }).catch(function (error) {
+    console.error(error);
+  });
+}
   
   return (
     <div className="App">
@@ -43,6 +80,14 @@ function App() {
                       {Object.keys(filtered[0].languages).map(k => <li key={k}>{filtered[0].languages[k]}</li>)}
                     </ul>
                     <img src={filtered[0].flags.png} alt={`flag of ${filtered[0].name.common}`} width='125px'></img>
+                    {weather ? 
+                    <><h2>Weather in {filtered[0].capital[0]}</h2>
+                    <p><b>temperature:</b> {weather.temp_c} Celsius</p>
+                    <img src={weather.condition.icon} alt={weather.condition.text}></img>
+                    <p><b>wind:</b> {weather.wind_kph} kph direction {weather.wind_dir}</p>
+                    </>
+                  :<></>}
+                    
                   </div> :
                     filtered.map(f => <p key={f.name.common}><span>{f.name.common} </span><button onClick={() => show(f.name.common)}>show</button></p>) 
                       : <></>}
