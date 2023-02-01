@@ -35,13 +35,23 @@ const App = () => {
         e.preventDefault()
         const exist = persons.filter(p => p.name === newName)
         if(exist.length === 0){
-           let newPersons = [...persons]
-        newPersons.push({name: newName, number: newNumber})
+          const personObject = {
+            name: newName,
+            number: newNumber
+          }
+          //
+          Axios.post('http://localhost:3001/persons', personObject)
+          .then(response => {
+            let newPersons = [...persons]
+        newPersons.push(response.data)
         setPersons(newPersons)
         document.getElementById('input').value=''
         setNewName('')
         document.getElementById('inputNumber').value=''
         setNewNumber(null)
+          })
+          //
+           
         } else {
             alert(`${newName} already exist!`)
         }
