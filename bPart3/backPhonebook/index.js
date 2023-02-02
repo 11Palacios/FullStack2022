@@ -30,6 +30,12 @@ app.get('/', (req, res) => {
   res.send('<h1>Phonebook Backend</h1>')
 })
 
+app.get('/info', (req, res) => {
+    const len = persons.length
+    const d = new Date()
+    res.send(`<p>Phonebook has info for ${len} people</p><br/><p>${d}</p>`)
+})
+
 app.get('/api/persons', (req, res) => {
   res.json(persons)
 })
