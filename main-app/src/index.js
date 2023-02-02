@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import Note from './components/Note';
 import noteService from './services/notes';
+import './index.css';
+import Notification from './components/Notification';
 
 const App = () => {
 
   const [notes, setNotes] = useState(null)
   const [newNote, setNewNote] = useState('')
   const [showAll, setShowAll] = useState(true)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
       noteService.getAll()
@@ -16,7 +19,6 @@ const App = () => {
         })
   }, [])
   
-
   const notesToShow = showAll ? notes : notes.filter ( note => note.important === true)
 
   const handleNewNote = (e) => {
@@ -49,7 +51,8 @@ const App = () => {
       setNotes(notes.map(n => n.id !== id ? n : returnedNote))
     })
     .catch(error => {
-      alert(`the note ${note.content} was already deleted from the server`)
+      setErrorMessage(`the note ${note.content} was already deleted from the server`)
+      setTimeout(() => {          setErrorMessage(null)        }, 5000)
       setNotes(notes.filter(n => n.id !== id))
     })
   }
@@ -57,6 +60,7 @@ const App = () => {
   return (
     <div>
       <h1>Notes</h1>
+      <Notification message={errorMessage} />
       {notes ?
       <>
       <div>        
@@ -67,7 +71,7 @@ const App = () => {
       <ul>
         {notesToShow.map(
           note =>(
-            <Note key={note.id} note={note} toggleImportance={() => toggleImportance(note.id)}/>
+            <Note key={note.id} note={note} className='note' toggleImportance={() => toggleImportance(note.id)}/>
           ) 
         )}
       </ul>
