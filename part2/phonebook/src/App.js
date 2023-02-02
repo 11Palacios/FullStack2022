@@ -8,6 +8,7 @@ const App = () => {
     const [ persons, setPersons ] = useState(null) 
     const [ newName, setNewName ] = useState('')
     const [ newNumber, setNewNumber ] = useState(null)
+    const [ successMessage, setSuccessMessage ] = useState(null)
 
     useEffect(() => {
         personService.getAll()
@@ -44,10 +45,15 @@ const App = () => {
             let newPersons = [...persons]
         newPersons.push(response)
         setPersons(newPersons)
+            setSuccessMessage(`Added ${newName}`)
+            setInterval(() => {
+              setSuccessMessage(null);
+            }, 5000);
         document.getElementById('input').value=''
         setNewName('')
         document.getElementById('inputNumber').value=''
         setNewNumber(null)
+        
           })
           //
            
@@ -77,6 +83,7 @@ const App = () => {
     return (
       <div>
         <h2>Phonebook</h2>
+        {successMessage ? <div className='success'>{successMessage}</div> : <></>}
         {persons ? 
         <>
             <Filter handleFilter={handleFilter} />
