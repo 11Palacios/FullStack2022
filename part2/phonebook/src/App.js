@@ -9,6 +9,7 @@ const App = () => {
     const [ newName, setNewName ] = useState('')
     const [ newNumber, setNewNumber ] = useState(null)
     const [ successMessage, setSuccessMessage ] = useState(null)
+    const [ errorMessage, setErrorMessage ] = useState(null)
 
     useEffect(() => {
         personService.getAll()
@@ -78,12 +79,16 @@ const App = () => {
       .then(
         setPersons(newPersons)
       )
+      .catch(
+          setErrorMessage(`Information of contact has already been removed from server`)
+        )
     }
   
     return (
       <div>
         <h2>Phonebook</h2>
         {successMessage ? <div className='success'>{successMessage}</div> : <></>}
+        {errorMessage ? <div className='error'>{errorMessage}</div> : <></>}
         {persons ? 
         <>
             <Filter handleFilter={handleFilter} />
