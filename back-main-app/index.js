@@ -1,6 +1,8 @@
 const express = require('express')
 const cors = require('cors')
 const app = express()
+const mongoose = require('mongoose')
+require('dotenv').config();
 
 const requestLogger = (request, response, next) => {
   console.log('Method:', request.method)
@@ -18,6 +20,46 @@ app.use(express.json())
 app.use(requestLogger)
 app.use(cors())
 
+
+const uri = `mongodb+srv://${process.env.USER}:${process.env.PASS}@cluster0.erx03lw.mongodb.net/${process.env.DBNAME}?retryWrites=true&w=majority`
+mongoose
+    .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(()=>{
+        console.log('conectado a base de datos')
+    })
+    .catch((e)=> {
+        console.log('Database error', e)
+    })
+
+    const noteSchema = new mongoose.Schema({
+      content: String,
+      date: Date,
+      important: Boolean,
+    })
+
+    const Note = mongoose.model('Note', noteSchema)
+
+    /*const note = new Note({
+      content: 'HTML is Easy',
+      date: new Date(),
+      important: true,
+    })
+    
+    note.save().then(result => {
+      console.log('note saved!')
+      mongoose.connection.close()
+    })*/
+    Note.find({}).then(result => {
+      result.forEach(note => {
+        console.log(note)
+      })
+      mongoose.connection.close()
+    })
+    /**
+     * Note.find({ important: true }).then(result => {
+  // ...
+})
+     */
 let notes = [
   {
     id: 1,
