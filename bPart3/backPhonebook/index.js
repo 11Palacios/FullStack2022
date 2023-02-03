@@ -3,7 +3,7 @@ const app = express()
 const morgan = require('morgan')
 
 app.use(express.json())
-app.use(morgan('tiny'))
+app.use(morgan(':method :url :status :res[content] - :response-time ms :date[web]'))
 
 let persons = [
   {
