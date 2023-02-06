@@ -5,7 +5,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 require('dotenv').config();
 const Phone = require('./models/phone')
-
+app.use(express.static('build'))
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content] - :response-time ms :date[web]'))
 app.use(cors())
@@ -25,6 +25,7 @@ app.get('/api/persons', (request, response) => {
   Phone.find({}).then(p => {
     response.json(p)
   })
+  mongoose.connection.close()
 })
 
 app.get('/api/persons/:id', (req, res) => {
