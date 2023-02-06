@@ -30,22 +30,13 @@ app.get('/api/persons', (request, response) => {
 
 app.get('/api/persons/:id', (req, res) => {
     const id = Number(req.params.id)
-    const person = persons.filter(person => person.id === id)
+    const person = Phone.filter(person => person.id === id)
     if(person){
         res.json(person) 
     }else{
         res.status(404).end()
     }
 })
-
-//
-
-const generateId = () => {
-    const maxId = persons.length > 0
-      ? Math.max(...persons.map(n => n.id))
-      : 0
-    return maxId + 1
-  }
 
 app.post('/api/persons', (req, res) => {
     const body = req.body
@@ -60,7 +51,7 @@ app.post('/api/persons', (req, res) => {
           error: 'number missing' 
         })
       }
-    const exist = persons.filter(p => p.name === body.name)
+    const exist = Phone.filter(p => p.name === body.name)
     if (exist) {
         return response.status(400).json({ 
           error: 'name must be unique' 
@@ -70,12 +61,11 @@ app.post('/api/persons', (req, res) => {
     const person = {
       name: body.name,
       number: body.number,
-      id: generateId(),
     }
   
-    persons = persons.concat(person)
-  
-    res.json(person)
+    Phone.save().then(person => {
+      response.json(person)
+    })
   })
 //
 
