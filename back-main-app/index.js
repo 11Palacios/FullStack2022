@@ -1,8 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const app = express()
-const mongoose = require('mongoose')
-require('dotenv').config();
+require('dotenv').config()
 const Note = require('./models/note')
 
 const requestLogger = (request, response, next) => {
@@ -37,11 +36,11 @@ app.post('/api/notes', (request, response, next) => {
   })
 
   note.save()
-  .then(savedNote => savedNote.toJSON())  
-  .then(savedAndFormattedNote => {      
-    response.json(savedAndFormattedNote)    
-  }) 
-  .catch(error => next(error))
+    .then(savedNote => savedNote.toJSON())
+    .then(savedAndFormattedNote => {
+      response.json(savedAndFormattedNote)
+    })
+    .catch(error => next(error))
 })
 
 app.get('/api/notes', (request, response) => {
@@ -53,21 +52,21 @@ app.get('/api/notes', (request, response) => {
 app.get('/api/notes/:id', (request, response, next) => {
   Note.findById(request.params.id)
     .then(note => {
-      if (note) {        
-        response.json(note)      
-      } else {        
-        response.status(404).end()      
-      }    
+      if (note) {
+        response.json(note)
+      } else {
+        response.status(404).end()
+      }
     })
     .catch(error => next(error))
-  })
+})
 
 app.delete('api/notes/:id', (request, response, next) => {
   Note.findByIdAndRemove(request.params.id)
-  .then(result => {
-    response.status(204).end()
-  })
-  .catch(error => next(error))
+    .then(result => { // eslint-disable-line no-unused-vars
+      response.status(204).end()
+    })
+    .catch(error => next(error))
 })
 
 app.put('/api/notes/:id', (request, response, next) => {
