@@ -5,7 +5,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 require('dotenv').config();
 const Phone = require('./models/phone')
-app.use(express.static('build'))
+
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content] - :response-time ms :date[web]'))
 app.use(cors())
@@ -25,7 +25,6 @@ app.get('/api/persons', (request, response) => {
   Phone.find({}).then(p => {
     response.json(p)
   })
-  mongoose.connection.close()
 })
 
 app.get('/api/persons/:id', (req, res) => {
@@ -51,11 +50,27 @@ app.post('/api/persons', (req, res) => {
           error: 'number missing' 
         })
       }
-    const exist = Phone.filter(p => p.name === body.name)
+    let exist
+    app.get('/api/persons', (request, response) => {
+      Phone.find({}).then(p => {
+        const all = response.json(p)
+        exist = all.filter(p => p.name === body.name)
+      })
+    })
     if (exist) {
-        return response.status(400).json({ 
-          error: 'name must be unique' 
-        })
+      app.put(`/api/persons/:${exist.id}`, (request, response, next) => {
+      
+        const person = {
+          name: body.name,
+          number: body.number,
+        }
+      
+        Phone.findByIdAndUpdate(exist.id, person, { new: true })
+          .then(updatedPerson => {
+            response.json(updatedPerson)
+          })
+          .catch(error => next(error))
+      })
       } 
 
     const person = {
@@ -63,17 +78,33 @@ app.post('/api/persons', (req, res) => {
       number: body.number,
     }
   
-    Phone.save().then(person => {
+    Phone.save(person).then(person => {
       response.json(person)
     })
   })
 //
 
-app.delete('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    persons = persons.filter(person => person.id !== id)
-    res.status(204).end()
+app.delete('api/persons/:id', (request, response, next) => {
+  Phone.findByIdAndRemove(request.params.id)
+  .then(result => {
+    response.status(204).end()
+  })
+  .catch(error => next(error))
 })
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).send({ error: 'not unique'})
+  }
+
+  next(error)
+}
+
+app.use(errorHandler)
 
 const PORT = 3001
 app.listen(PORT, () => {
