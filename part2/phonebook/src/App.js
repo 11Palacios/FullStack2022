@@ -56,6 +56,9 @@ const App = () => {
         setNewNumber(null)
         
           })
+          .catch( error => {
+            setErrorMessage(error);
+          })
           //
            
         } else {
