@@ -78,10 +78,12 @@ app.post('/api/persons', (req, res) => {
   })
 //
 
-app.delete('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    persons = persons.filter(person => person.id !== id)
-    res.status(204).end()
+app.delete('api/persons/:id', (request, response, next) => {
+  persons.findByIdAndRemove(request.params.id)
+  .then(result => {
+    response.status(204).end()
+  })
+  .catch(error => next(error))
 })
 
 const PORT = 3001
